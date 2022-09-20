@@ -1,14 +1,19 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Input,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 
 @Directive({
   selector: '[errorMsg]',
 })
 export class ErrorMsgDirective implements OnInit {
-
   private _color: string = 'red';
   private _mensaje: string = 'Este campo es requerido';
 
-  htmlElement: ElementRef<HTMLElement>
+  htmlElement: ElementRef<HTMLElement>;
 
   @Input() set color(valor: string) {
     this._color = valor;
@@ -20,14 +25,36 @@ export class ErrorMsgDirective implements OnInit {
     this.setMensaje();
   }
 
-  constructor(private elementRef: ElementRef<HTMLElement>) {
-    this.htmlElement = elementRef;
+  @Input() set valido(valor: boolean) {
+    if (valor) {
+      this.htmlElement.nativeElement.classList.add('hidden');
+    } else {
+      this.htmlElement.nativeElement.classList.remove('hidden');
+    }
+  }
+
+  constructor(private el: ElementRef<HTMLElement>) {
+    this.htmlElement = el;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // if ( changes.mensaje ) {
+    //   const mensaje = changes.mensaje.currentValue;
+    //   this.htmlElement.nativeElement.innerText = mensaje;
+    // }
+    // if ( changes.color ) {
+    //   const color = changes.color.currentValue;
+    //   this.htmlElement.nativeElement.style.color = color;
+    // }
+    // console.log(changes)
   }
 
   ngOnInit(): void {
+    // console.log(this.color); // undefined
+    // console.log(this.mensaje); // undefined
     this.setEstilo();
-
-
+    this.setColor();
+    this.setMensaje();
   }
 
   setEstilo(): void {
